@@ -32,12 +32,16 @@ Socket Socket::accept()
     return ::accept(*this, (sockaddr*)&m_Addr, &socklen);
 }
 
-std::string Socket::read()
+std::string Socket::read(uint bytes)
 {
-    char buffer[3000] = {0};    
-    auto sizeRead = ::read(*this, buffer, 3000);
+    auto buffer = new char[bytes];
+    std::memset(buffer, 0, bytes);
 
-    return buffer;
+    auto sizeRead = ::read(*this, buffer, bytes);
+    std::string bufferString = buffer;
+    delete[] buffer;
+
+    return bufferString;
 }
 
 void Socket::write(const std::string& content)

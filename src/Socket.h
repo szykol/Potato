@@ -23,7 +23,7 @@ public:
     Socket(int filefd) : m_Socketfd(filefd) {}
     int listen(int maxConnections);
     Socket accept();
-    std::string read();
+    std::string read(uint bytes);
     void write(const std::string& content);
     void close();
     inline operator int() { return m_Socketfd; }

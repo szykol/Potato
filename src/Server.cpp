@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "Request.h"
 
 Server::Server(Socket::Port port, int maxConnections)
     : m_Port(port.port), m_Socket(Socket::Port(port)), m_MaxConnections(maxConnections)
@@ -21,8 +22,8 @@ void Server::run()
             return;
         }
 
-        auto req = in_sock.read();
-        std::cout<<req<<std::endl;
+        auto request = HTTPRequest::getHTTPRequest(in_sock);
+        std::cout<<request<<std::endl;
         in_sock.write("Hello, from server!");
         in_sock.close();
     }
