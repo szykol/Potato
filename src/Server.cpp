@@ -22,8 +22,15 @@ void Server::run()
             return;
         }
 
-        auto request = HTTPRequest::getHTTPRequest(in_sock);
-        std::cout<<request<<std::endl;
+        auto request = HTTPRequestParser::getHTTPRequest(in_sock);
+        std::cout<<"Method: "<<request.Method()<<std::endl;
+        std::cout<<"URI: "<<request.URI()<<std::endl;
+        std::cout<<"HTTPVersion: "<<request.HTTPVersion()<<std::endl;
+        std::cout<<"HeaderFields: "<<std::endl;
+
+        for(auto& pair : request.HeaderFields()) {
+            std::cout<<pair.first<<": "<<pair.second<<std::endl;
+        }
         in_sock.write("Hello, from server!");
         in_sock.close();
     }

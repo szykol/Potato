@@ -2,22 +2,32 @@
 
 #include <iostream>
 
-std::string HTTPRequest::parseHTTPRequest()
+#include "Utill.h"
+
+std::string HTTPRequestParser::parseHTTPRequest()
 {
     return "";
 }
 
-std::string HTTPRequest::getHTTPRequest(Socket socket)
+HTTPRequest HTTPRequestParser::getHTTPRequest(Socket socket)
 {
     auto lines = getLines(socket);
-    std::string retVal;
-    for (auto &line: lines) {
-        retVal += line + "\n";
+    auto firstLine = lines[0];
+
+    auto firstLineData = split(firstLine, " ");
+
+    auto r = HTTPRequest(firstLineData[0], firstLineData[1], firstLineData[2]);
+    for (int i = 1; i < lines.size(); i++) {
+        auto line = lines[i];
+        auto keyVal = split(line, ":");
+
+        r.AddHeaderField(std::make_pair(keyVal[0], keyVal[1]));
     }
-    return retVal;
+
+    return r;
 }
 
-std::vector<std::string> HTTPRequest::getLines(Socket socket)
+std::vector<std::string> HTTPRequestParser::getLines(Socket socket)
 {
     std::string req;
     std::vector<std::string> lines;
@@ -38,4 +48,14 @@ std::vector<std::string> HTTPRequest::getLines(Socket socket)
     }
     
     return lines;
+}
+
+HTTPRequest::HTTPRequest(const std::string& method, const std::string& uri, const std::string& httpVer)
+    : m_Method(method), m_URI(uri), m_HTTPVersion(httpVer)
+{
+}
+
+bool HTTPRequest::AddHeaderField(const std::pair<std::string, std::string>& headerField)
+{
+    m_HeaderFields.insert(headerField);
 }
