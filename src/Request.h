@@ -15,6 +15,8 @@ class HTTPRequest
     std::unordered_map<std::string, std::string> m_HeaderFields;
 	std::string m_Body;
 public:
+	enum class RequestMethod { GET = 0, POST };
+public:
     HTTPRequest(const std::string& method, const std::string& uri, const std::string& httpVer);
     bool AddHeaderField(const std::pair<std::string, std::string>& headerField);
 	inline void SetBody(const std::string& body) { m_Body = body; }

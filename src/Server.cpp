@@ -6,6 +6,9 @@ Server::Server(Socket::Port port, int maxConnections)
 {
 }
 
+void Server::AddEndpoint(const std::string& URI, const std::vector<HTTPRequest::RequestMethod>& methods, const std::function<void(const HTTPRequest&)>& callback) {
+   m_EndpointMap.insert(std::make_pair(URI, EndpointData(methods, callback))); 
+}
 void Server::run()
 {
     std::cout<<"Server starts listening at the port"<<m_Port<<std::endl;
@@ -23,6 +26,19 @@ void Server::run()
         }
 
         auto request = HTTPRequestParser::getHTTPRequest(in_sock);
+        
+        if (m_EndpointMap.find(request.URI()) != m_EndpointMap.end()) {
+            auto method = request.Method();
+            auto endpoint = m_EndpointMap.find(request.URI())->second;
+            if (!endpoint.AllowsMethod(method)) {
+                std::cout<<"Method not allowed!"<<std::endl;
+                continue;
+            }
+            auto callback = endpoint.m_Callback;
+
+            callback(request);
+        }
+
         std::cout<<"Method: "<<request.Method()<<std::endl;
         std::cout<<"URI: "<<request.URI()<<std::endl;
         std::cout<<"HTTPVersion: "<<request.HTTPVersion()<<std::endl;
