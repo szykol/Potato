@@ -31,6 +31,8 @@ void Server::run()
         for(auto& pair : request.HeaderFields()) {
             std::cout<<pair.first<<": "<<pair.second<<std::endl;
         }
+
+		std::cout<<"Content body: "<<request.Body()<<std::endl;
         in_sock.write("Hello, from server!");
         in_sock.close();
     }

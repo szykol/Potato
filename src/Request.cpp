@@ -23,7 +23,13 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket socket)
 		
         r.AddHeaderField(std::make_pair(keyVal[0], trim(keyVal[1])));
     }
+	if (r.HeaderFields().find("Content-Length") != r.HeaderFields().end()) {
+		auto val = r.HeaderFields().find("Content-Length")->second;
+		auto toRead = std::stoi(val); 
+		auto body = socket.read(toRead);
 
+		r.SetBody(body);
+	}
     return r;
 }
 

@@ -13,16 +13,18 @@ class HTTPRequest
     std::string m_HTTPVersion;
 
     std::unordered_map<std::string, std::string> m_HeaderFields;
-    // TODO: body of request
+	std::string m_Body;
 public:
     HTTPRequest(const std::string& method, const std::string& uri, const std::string& httpVer);
     bool AddHeaderField(const std::pair<std::string, std::string>& headerField);
+	inline void SetBody(const std::string& body) { m_Body = body; }
 
     inline const std::string& Method() const { return m_Method; }
     inline const std::string& URI() const { return m_URI; }
     inline const std::string& HTTPVersion() const { return m_HTTPVersion; }
 
     inline const std::unordered_map<std::string, std::string>& HeaderFields() const { return m_HeaderFields; }
+	inline const std::string& Body() const { return m_Body; }
 };
 
 class HTTPRequestParser
