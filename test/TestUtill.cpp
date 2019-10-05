@@ -40,3 +40,19 @@ TEST(UtillSplitTest, SubstrIsStr) {
     auto splitStrings = split(str, "fff");
     ASSERT_EQ(splitStrings.size(), 1);
 }
+
+TEST(UtillTrimTest, TrimWorks) {
+	ASSERT_EQ(trim("  Hello, World!\n"), "Hello,World!");	
+}
+
+TEST(UtillTrimTest, EmptyString) {
+	ASSERT_EQ(trim(""), "");
+}
+
+TEST(UtillTrimTest, OnlyWhiteSpace) {
+	ASSERT_EQ(trim("   \n \t"), "");
+}
+
+TEST(UtillTrimTest, NoWhitespace) {
+	ASSERT_EQ(trim("Hello,World!"), "Hello,World!");
+}

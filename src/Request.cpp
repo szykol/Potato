@@ -20,8 +20,8 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket socket)
     for (int i = 1; i < lines.size(); i++) {
         auto line = lines[i];
         auto keyVal = split(line, ":");
-
-        r.AddHeaderField(std::make_pair(keyVal[0], keyVal[1]));
+		
+        r.AddHeaderField(std::make_pair(keyVal[0], trim(keyVal[1])));
     }
 
     return r;
