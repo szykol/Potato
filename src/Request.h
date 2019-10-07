@@ -6,6 +6,7 @@
 
 #include "Socket.h"
 
+enum class RequestMethod { GET = 0, POST };
 class HTTPRequest
 {
     std::string m_Method;
@@ -17,7 +18,6 @@ class HTTPRequest
 
     mutable Socket m_Socket;
 public:
-    enum class RequestMethod { GET = 0, POST };
 public:
     HTTPRequest(Socket socket, const std::string& method, const std::string& uri, const std::string& httpVer);
     bool AddHeaderField(const std::pair<std::string, std::string>& headerField);

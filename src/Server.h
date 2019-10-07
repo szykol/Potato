@@ -16,6 +16,6 @@ class Server
     std::unordered_map<std::string, EndpointData> m_EndpointMap;
 public:
     Server(Socket::Port port, int max_connections);
-    void AddEndpoint(const std::string& URI, const std::vector<HTTPRequest::RequestMethod>& methods, const std::function<void(const HTTPRequest&)>& callback);
+    void AddEndpoint(const std::string& URI, const std::vector<RequestMethod>& methods, const std::function<void(const HTTPRequest&)>& callback);
     void run();
 };

@@ -6,7 +6,7 @@ Server::Server(Socket::Port port, int maxConnections)
 {
 }
 
-void Server::AddEndpoint(const std::string& URI, const std::vector<HTTPRequest::RequestMethod>& methods, const std::function<void(const HTTPRequest&)>& callback) {
+void Server::AddEndpoint(const std::string& URI, const std::vector<RequestMethod>& methods, const std::function<void(const HTTPRequest&)>& callback) {
    m_EndpointMap.insert(std::make_pair(URI, EndpointData(methods, callback))); 
 }
 void Server::run()
@@ -49,7 +49,7 @@ void Server::run()
         }
 
         if (request.Body().length() > 0)
-		    std::cout<<"Content body: "<<request.Body()<<std::endl;
+            std::cout<<"Content body: "<<request.Body()<<std::endl;
         in_sock.close();
     }
 }
