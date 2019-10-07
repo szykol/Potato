@@ -7,7 +7,11 @@ int main() {
     auto server = Server(Socket::Port(8080), 3);
 
     server.AddEndpoint("/", {HTTPRequest::RequestMethod::GET, HTTPRequest::RequestMethod::POST}, [](auto& req) {
-        std::cout<<req.Method()<<std::endl;
+        req.Write("Welcome to /!");
+    });
+
+    server.AddEndpoint("/say_hi", {HTTPRequest::RequestMethod::GET}, [](auto& req) {
+        req.Write("Hello!");
     });
 
     server.run();

@@ -16,20 +16,20 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket socket)
 
     auto firstLineData = split(firstLine, " ");
 
-    auto r = HTTPRequest(firstLineData[0], firstLineData[1], firstLineData[2]);
+    auto r = HTTPRequest(socket, firstLineData[0], firstLineData[1], firstLineData[2]);
     for (int i = 1; i < lines.size(); i++) {
         auto line = lines[i];
         auto keyVal = split(line, ":");
 		
         r.AddHeaderField(std::make_pair(keyVal[0], trim(keyVal[1])));
     }
-	if (r.HeaderFields().find("Content-Length") != r.HeaderFields().end()) {
-		auto val = r.HeaderFields().find("Content-Length")->second;
-		auto toRead = std::stoi(val); 
-		auto body = socket.read(toRead);
+    if (r.HeaderFields().find("Content-Length") != r.HeaderFields().end()) {
+        auto val = r.HeaderFields().find("Content-Length")->second;
+        auto toRead = std::stoi(val); 
+        auto body = socket.read(toRead);
 
-		r.SetBody(body);
-	}
+        r.SetBody(body);
+    }
     return r;
 }
 
@@ -56,12 +56,18 @@ std::vector<std::string> HTTPRequestParser::getLines(Socket socket)
     return lines;
 }
 
-HTTPRequest::HTTPRequest(const std::string& method, const std::string& uri, const std::string& httpVer)
-    : m_Method(method), m_URI(uri), m_HTTPVersion(httpVer)
+HTTPRequest::HTTPRequest(Socket socket, const std::string& method, const std::string& uri, const std::string& httpVer)
+    : m_Socket(socket), m_Method(method), m_URI(uri), m_HTTPVersion(httpVer)
 {
 }
 
 bool HTTPRequest::AddHeaderField(const std::pair<std::string, std::string>& headerField)
 {
     m_HeaderFields.insert(headerField);
+}
+
+void HTTPRequest::Write(const std::string& content) const {
+    if (content.length() > 0) {
+        m_Socket.write(content);
+    }
 }

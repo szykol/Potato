@@ -48,8 +48,8 @@ void Server::run()
             std::cout<<pair.first<<": "<<pair.second<<std::endl;
         }
 
-		std::cout<<"Content body: "<<request.Body()<<std::endl;
-        in_sock.write("Hello, from server!");
+        if (request.Body().length() > 0)
+		    std::cout<<"Content body: "<<request.Body()<<std::endl;
         in_sock.close();
     }
 }
