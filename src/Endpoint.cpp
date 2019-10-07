@@ -3,9 +3,9 @@
 #include <algorithm>
 
 EndpointData::EndpointData(const std::vector<HTTPRequest::RequestMethod>& methods, std::function<void( const HTTPRequest&)> callback) 
-	: m_AllowedMethods(methods), m_Callback(callback)
+    : m_AllowedMethods(methods), m_Callback(callback)
 {
-	
+    
 }
 
 bool EndpointData::AllowsMethod(HTTPRequest::RequestMethod method) {

@@ -30,7 +30,7 @@ std::vector<std::string> split(const std::string& str, const std::string& substr
 }
 
 std::string trim(const std::string& str) {
-	auto value = str;
-	value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
-	return value;
+    auto value = str;
+    value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
+    return value;
 }
