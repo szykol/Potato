@@ -17,7 +17,7 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket& socket)
     auto firstLineData = split(firstLine, " ");
 
     auto r = HTTPRequest(socket, firstLineData[0], firstLineData[1], firstLineData[2]);
-    for (int i = 1; i < lines.size(); i++) {
+    for (int i = 1; i < lines.size() - 1; i++) {
         auto line = lines[i];
         auto keyVal = split(line, ":");
 		
@@ -26,7 +26,8 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket& socket)
     if (r.HeaderFields().find("Content-Length") != r.HeaderFields().end()) {
         auto val = r.HeaderFields().find("Content-Length")->second;
         auto toRead = std::stoi(val); 
-        auto body = socket.read(toRead);
+        auto alreadyRead = lines[lines.size() - 1];
+        auto body = alreadyRead + socket.read(toRead - alreadyRead.length());
 
         r.SetBody(body);
     }
@@ -38,13 +39,18 @@ std::vector<std::string> HTTPRequestParser::getLines(Socket& socket)
     std::string req;
     std::vector<std::string> lines;
 
+    std::string bodyRemainder;
     while(true) {
         while(req.find("\n") == std::string::npos) {
             req += socket.read(10);
         }
         auto newLinePos = req.find("\n");
         auto line = req.substr(0, newLinePos);
-        if (line.length() == 1) break;
+        if (line.length() == 1) {
+            bodyRemainder = req.substr(newLinePos + 1);
+            lines.push_back(bodyRemainder);
+            break;
+        }
         line.erase(line.find("\r"));
         lines.push_back(line);
 
