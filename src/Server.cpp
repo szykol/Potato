@@ -37,6 +37,8 @@ void Server::run()
             auto callback = endpoint.m_Callback;
 
             callback(request);
+        } else {
+            request.Write("Not found");
         }
 
         std::cout<<"Method: "<<request.Method()<<std::endl;
