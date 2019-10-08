@@ -35,9 +35,9 @@ public:
 
 class HTTPRequestParser
 {
-    static std::vector<std::string> getLines(Socket socket);
+    static std::vector<std::string> getLines(Socket& socket);
 public:
     HTTPRequestParser() = delete;
-    static HTTPRequest getHTTPRequest(Socket socket);
+    static HTTPRequest getHTTPRequest(Socket& socket);
     static std::string parseHTTPRequest();
 };

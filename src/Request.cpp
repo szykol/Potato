@@ -9,7 +9,7 @@ std::string HTTPRequestParser::parseHTTPRequest()
     return "";
 }
 
-HTTPRequest HTTPRequestParser::getHTTPRequest(Socket socket)
+HTTPRequest HTTPRequestParser::getHTTPRequest(Socket& socket)
 {
     auto lines = getLines(socket);
     auto firstLine = lines[0];
@@ -33,7 +33,7 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket socket)
     return r;
 }
 
-std::vector<std::string> HTTPRequestParser::getLines(Socket socket)
+std::vector<std::string> HTTPRequestParser::getLines(Socket& socket)
 {
     std::string req;
     std::vector<std::string> lines;

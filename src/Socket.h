@@ -21,10 +21,10 @@ public:
 public:
     Socket(Port port);
     Socket(int filefd) : m_Socketfd(filefd) {}
-    int listen(int maxConnections);
-    Socket accept();
-    std::string read(uint bytes);
-    void write(const std::string& content);
-    void close();
+    virtual int listen(int maxConnections);
+    virtual Socket accept();
+    virtual std::string read(uint bytes);
+    virtual void write(const std::string& content);
+    virtual void close();
     inline operator int() { return m_Socketfd; }
 };
