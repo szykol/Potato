@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Utill.h"
+#include "Exception.h"
 
 std::string HTTPRequestParser::parseHTTPRequest()
 {
@@ -15,6 +16,9 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket& socket)
     auto firstLine = lines[0];
 
     auto firstLineData = split(firstLine, " ");
+    if (firstLineData.size() < 3) {
+        throw BadRequest();
+    }
 
     auto r = HTTPRequest(socket, firstLineData[0], firstLineData[1], firstLineData[2]);
     for (int i = 1; i < lines.size() - 1; i++) {

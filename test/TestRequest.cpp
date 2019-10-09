@@ -3,6 +3,7 @@
 #include "../src/Request.h"
 #include "../src/Socket.h"
 #include "../src/Utill.h"
+#include "../src/Exception.h"
 
 class MockSocket : public Socket {
 public:
@@ -86,4 +87,13 @@ TEST(RequestTest, ParsingWorksGETTrailing) {
     ASSERT_EQ(hFields["Accept"], "*/*");
 
     ASSERT_EQ(r.Body(), "");
+}
+
+TEST(RequestTest, ParsingWrongStartLine) {
+    const auto httpReq = "GET HTTP/1.1\r\nAccept: */*\r\nUser-Agent: tests\r\n\r\n sdsadsad asdsa asd";
+    MockSocket m;
+
+    m.buffer = httpReq;
+    
+    ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), BadRequest);
 }
