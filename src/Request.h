@@ -6,7 +6,7 @@
 
 #include "Socket.h"
 
-enum class RequestMethod { GET = 0, POST };
+enum class RequestMethod { GET = 0, POST, HEAD, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH, UPDATE, NONE};
 class HTTPRequest
 {
     std::string m_Method;

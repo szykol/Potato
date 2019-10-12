@@ -13,3 +13,9 @@ class BadRequest : public PotatoException
 public:
     BadRequest() : PotatoException("Bad HTTP Request") {}
 };
+
+class InvalidRequestMethod : public BadRequest
+{
+public:
+    InvalidRequestMethod() : BadRequest() {}
+};
