@@ -39,7 +39,7 @@ TEST(EndpointTest, AllowsMethodsWorksGET) {
 
     auto allowed = RequestMethod::GET;
     ASSERT_TRUE(endpoint.AllowsMethod(allowed));
-    for (int i = int(RequestMethod::GET); i <= int(RequestMethod::UPDATE); i++) {
+    for (int i = int(RequestMethod::GET); i < int(RequestMethod::NONE); i++) {
         auto unallowed = RequestMethod(i);
         if (unallowed != allowed)
             ASSERT_FALSE(endpoint.AllowsMethod(RequestMethod(i)));
