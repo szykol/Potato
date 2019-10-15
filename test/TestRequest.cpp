@@ -4,6 +4,7 @@
 #include "../src/Socket.h"
 #include "../src/Utill.h"
 #include "../src/Exception.h"
+#include "../src/Endpoint.h"
 
 class MockSocket : public Socket {
 public:
@@ -95,5 +96,44 @@ TEST(RequestTest, ParsingWrongStartLine) {
 
     m.buffer = httpReq;
     
+    ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), BadRequest);
+}
+
+TEST(RequestTest, MethodExists) {
+    ASSERT_FALSE(HTTPRequestParser::methodExists("GOAT"));
+
+    for(int i = int(RequestMethod::GET); i < int(RequestMethod::NONE); i++) {
+        ASSERT_TRUE(HTTPRequestParser::methodExists(EndpointData::EnumToStr(RequestMethod(i))));
+    }
+}
+
+TEST(RequestTest, ParsingWrongHTTPMethod) {
+    const auto httpReq = "GOAT / HTTP/1.1\r\nAccept: */*\r\nUser-Agent: tests\r\n\r\n sdsadsad asdsa asd";
+    MockSocket m;
+
+    m.buffer = httpReq;
+
+    ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), InvalidRequestMethod);
+}
+
+TEST(RequestTest, ParsingOnlyStartLine) {
+    const auto httpReq = "GET / HTTP/1.1\r\n\r\n";
+    MockSocket m;
+    m.buffer = httpReq;
+
+    auto r = HTTPRequestParser::getHTTPRequest(m);
+
+    ASSERT_EQ(r.Method(), "GET");
+    ASSERT_EQ(r.URI(), "/");
+    ASSERT_EQ(r.HTTPVersion(), "HTTP/1.1");
+
+    ASSERT_EQ(r.HeaderFields().size(), 0);
+}
+
+TEST(RequestTest, ParsingNoStartLine) {
+    const auto httpReq = "Accept: */*\r\nUser-Agent: tests\r\n\r\n";
+    MockSocket m;
+    m.buffer = httpReq;
+
     ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), BadRequest);
 }

@@ -3,16 +3,13 @@
 
 #include "Request.h"
 
-int main() {
+int main()
+{
     auto server = Server(Socket::Port(8080), 3);
 
-    server.AddEndpoint("/", {RequestMethod::GET, RequestMethod::POST}, [](auto& req) {
-        req.Write("Welcome to /!");
-    });
+    server.AddEndpoint("/", {RequestMethod::GET, RequestMethod::POST}, [](auto &req) { req.Write("Welcome to /!"); });
 
-    server.AddEndpoint("/say_hi", {RequestMethod::GET}, [](auto& req) {
-        req.Write("Hello!");
-    });
+    server.AddEndpoint("/say_hi", {RequestMethod::GET}, [](auto &req) { req.Write("Hello!"); });
 
     server.run();
 }

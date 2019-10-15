@@ -2,11 +2,12 @@
 
 #include <algorithm>
 
-std::vector<std::string> split(const std::string& str, const std::string& substr)
+std::vector<std::string> split(const std::string &str, const std::string &substr)
 {
     std::vector<std::string> strings;
 
-    if (substr.length() == 0) return strings;
+    if (substr.length() == 0)
+        return strings;
 
     if (substr == str) {
         strings.push_back(substr);
@@ -16,20 +17,23 @@ std::vector<std::string> split(const std::string& str, const std::string& substr
     auto start = 0;
     auto pos = str.find(substr, start);
     const auto size = str.length();
-    if (pos == std::string::npos) return strings;
+    if (pos == std::string::npos)
+        return strings;
 
-    while(true) {
+    while (true) {
         strings.push_back(str.substr(start, pos - start));
         start = pos + 1;
 
-        if (pos == std::string::npos || pos == size - 1) break;
+        if (pos == std::string::npos || pos == size - 1)
+            break;
         pos = str.find(substr, start);
     }
 
     return strings;
 }
 
-std::string trim(const std::string& str) {
+std::string trim(const std::string &str)
+{
     auto value = str;
     value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
     return value;

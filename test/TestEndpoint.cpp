@@ -1,37 +1,54 @@
 #include <gtest/gtest.h>
+#include <gtest/gtest-param-test.h>
 
 #include "../src/Endpoint.h"
 #include "../src/Exception.h"
 
-TEST(EndpointTest, EnumToStrWorks) {
-    ASSERT_EQ("GET", EndpointData::EnumToStr(RequestMethod::GET));
-    ASSERT_EQ("POST", EndpointData::EnumToStr(RequestMethod::POST));
-    ASSERT_EQ("PATCH", EndpointData::EnumToStr(RequestMethod::PATCH)); 
-    ASSERT_EQ("DELETE", EndpointData::EnumToStr(RequestMethod::DELETE));
-    ASSERT_EQ("UPDATE", EndpointData::EnumToStr(RequestMethod::UPDATE));
-    ASSERT_EQ("OPTIONS", EndpointData::EnumToStr(RequestMethod::OPTIONS));
-    ASSERT_EQ("HEAD", EndpointData::EnumToStr(RequestMethod::HEAD));
-    ASSERT_EQ("PUT", EndpointData::EnumToStr(RequestMethod::PUT));
-    ASSERT_EQ("CONNECT", EndpointData::EnumToStr(RequestMethod::CONNECT));
-    ASSERT_EQ("TRACE", EndpointData::EnumToStr(RequestMethod::TRACE));
+class EndpointTestMethod : public testing::TestWithParam<std::pair<std::string, RequestMethod>>
+{
 
-    ASSERT_EQ("NONE", EndpointData::EnumToStr(RequestMethod(100)));
-    ASSERT_EQ("NONE", EndpointData::EnumToStr(RequestMethod::NONE));
+};
+
+INSTANTIATE_TEST_SUITE_P(EndpointMethods,
+                        EndpointTestMethod,
+                        testing::Values(
+                            std::make_pair("GET", RequestMethod::GET),
+                            std::make_pair("POST", RequestMethod::POST),
+                            std::make_pair("PATCH",RequestMethod::PATCH),
+                            std::make_pair("DELETE",RequestMethod::DELETE),
+                            std::make_pair("UPDATE",RequestMethod::UPDATE),
+                            std::make_pair("OPTIONS",RequestMethod::OPTIONS),
+                            std::make_pair("HEAD",RequestMethod::HEAD),
+                            std::make_pair("PUT",RequestMethod::PUT),
+                            std::make_pair("CONNECT",RequestMethod::CONNECT),
+                            std::make_pair("TRACE",RequestMethod::TRACE)
+                        )
+);
+
+TEST_P(EndpointTestMethod, EnumToStrWorks) {
+    auto pair = GetParam();
+    auto methodStr = pair.first;
+    auto methodEnum = pair.second;
+
+    ASSERT_EQ(methodStr, EndpointData::EnumToStr(methodEnum));
 }
 
-TEST(EndpointTest, StrToEnumWorks) {
-    ASSERT_EQ(RequestMethod::GET, EndpointData::StrToEnum("GET"));
-    ASSERT_EQ(RequestMethod::POST, EndpointData::StrToEnum("POST"));
-    ASSERT_EQ(RequestMethod::PATCH, EndpointData::StrToEnum("PATCH"));
-    ASSERT_EQ(RequestMethod::DELETE, EndpointData::StrToEnum("DELETE"));
-    ASSERT_EQ(RequestMethod::UPDATE, EndpointData::StrToEnum("UPDATE"));
-    ASSERT_EQ(RequestMethod::OPTIONS, EndpointData::StrToEnum("OPTIONS"));
-    ASSERT_EQ(RequestMethod::HEAD, EndpointData::StrToEnum("HEAD"));
-    ASSERT_EQ(RequestMethod::PUT, EndpointData::StrToEnum("PUT"));
-    ASSERT_EQ(RequestMethod::CONNECT, EndpointData::StrToEnum("CONNECT"));
-    ASSERT_EQ(RequestMethod::TRACE, EndpointData::StrToEnum("TRACE"));
+TEST_P(EndpointTestMethod, StrToEnumWorks) {
+    auto pair = GetParam();
+    auto methodStr = pair.first;
+    auto methodEnum = pair.second;
 
-    ASSERT_EQ(RequestMethod::NONE, EndpointData::StrToEnum("DOESNTEXIST"));
+    ASSERT_EQ(methodEnum, EndpointData::StrToEnum(methodStr));
+}
+
+TEST(EndpointTest, EnumToStrNoneAndInvalid) {
+    ASSERT_EQ(RequestMethod::NONE, EndpointData::StrToEnum("NONE"));
+    ASSERT_EQ(RequestMethod::NONE, EndpointData::StrToEnum("BLAH"));
+}
+
+TEST(EndpointTest, StrToEnumNoneAndInvalid) {
+    ASSERT_EQ("NONE", EndpointData::EnumToStr(RequestMethod::NONE));
+    ASSERT_EQ("NONE", EndpointData::EnumToStr(RequestMethod(100)));
 }
 
 TEST(EndpointTest, AllowsMethodsWorksGET) {
