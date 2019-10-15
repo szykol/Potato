@@ -96,7 +96,12 @@ bool HTTPRequest::AddHeaderField(const std::pair<std::string, std::string> &head
 
 void HTTPRequest::Write(const std::string &content) const
 {
-    if (content.length() > 0) {
-        m_Socket.write(content);
+    const auto length = content.length();
+    if (length > 0) {
+        std::string response = "HTTP/1.1 200 OK\r\nServer: Potato\r\nContent-Type: text/html\r\nContent-Length: ";
+        response += std::to_string(length);
+        response += "\r\n\r\n" + content;
+
+        m_Socket.write(response);
     }
 }
