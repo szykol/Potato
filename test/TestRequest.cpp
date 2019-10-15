@@ -115,3 +115,25 @@ TEST(RequestTest, ParsingWrongHTTPMethod) {
 
     ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), InvalidRequestMethod);
 }
+
+TEST(RequestTest, ParsingOnlyStartLine) {
+    const auto httpReq = "GET / HTTP/1.1\r\n\r\n";
+    MockSocket m;
+    m.buffer = httpReq;
+
+    auto r = HTTPRequestParser::getHTTPRequest(m);
+
+    ASSERT_EQ(r.Method(), "GET");
+    ASSERT_EQ(r.URI(), "/");
+    ASSERT_EQ(r.HTTPVersion(), "HTTP/1.1");
+
+    ASSERT_EQ(r.HeaderFields().size(), 0);
+}
+
+TEST(RequestTest, ParsingNoStartLine) {
+    const auto httpReq = "Accept: */*\r\nUser-Agent: tests\r\n\r\n";
+    MockSocket m;
+    m.buffer = httpReq;
+
+    ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), BadRequest);
+}
