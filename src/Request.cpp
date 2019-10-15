@@ -4,6 +4,7 @@
 
 #include "Utill.h"
 #include "Exception.h"
+#include "Endpoint.h"
 
 std::string HTTPRequestParser::parseHTTPRequest()
 {
@@ -20,7 +21,15 @@ HTTPRequest HTTPRequestParser::getHTTPRequest(Socket& socket)
         throw BadRequest();
     }
 
-    auto r = HTTPRequest(socket, firstLineData[0], firstLineData[1], firstLineData[2]);
+    auto method = firstLineData[0];
+    auto URI = firstLineData[1];
+    auto version = firstLineData[2];
+
+    if (!methodExists(method)) {
+        throw InvalidRequestMethod();
+    }
+
+    auto r = HTTPRequest(socket, method, URI, version);
     for (int i = 1; i < lines.size() - 1; i++) {
         auto line = lines[i];
         auto keyVal = split(line, ":");
@@ -64,6 +73,14 @@ std::vector<std::string> HTTPRequestParser::getLines(Socket& socket)
     }
     
     return lines;
+}
+
+bool HTTPRequestParser::methodExists(const std::string& method) {
+    for (auto i = int(RequestMethod::GET); i < int(RequestMethod::NONE); i++) {
+        if (method == EndpointData::EnumToStr(RequestMethod(i)))
+            return true;
+    }
+    return false;
 }
 
 HTTPRequest::HTTPRequest(Socket socket, const std::string& method, const std::string& uri, const std::string& httpVer)

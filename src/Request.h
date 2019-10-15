@@ -40,4 +40,7 @@ public:
     HTTPRequestParser() = delete;
     static HTTPRequest getHTTPRequest(Socket& socket);
     static std::string parseHTTPRequest();
+    static std::array<std::string, 3> parseStartLine(const std::string& line);
+
+    static bool methodExists(const std::string& method);
 };
