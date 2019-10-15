@@ -4,6 +4,7 @@
 #include "../src/Socket.h"
 #include "../src/Utill.h"
 #include "../src/Exception.h"
+#include "../src/Endpoint.h"
 
 class MockSocket : public Socket {
 public:
@@ -96,4 +97,21 @@ TEST(RequestTest, ParsingWrongStartLine) {
     m.buffer = httpReq;
     
     ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), BadRequest);
+}
+
+TEST(RequestTest, MethodExists) {
+    ASSERT_FALSE(HTTPRequestParser::methodExists("GOAT"));
+
+    for(int i = int(RequestMethod::GET); i < int(RequestMethod::NONE); i++) {
+        ASSERT_TRUE(HTTPRequestParser::methodExists(EndpointData::EnumToStr(RequestMethod(i))));
+    }
+}
+
+TEST(RequestTest, ParsingWrongHTTPMethod) {
+    const auto httpReq = "GOAT / HTTP/1.1\r\nAccept: */*\r\nUser-Agent: tests\r\n\r\n sdsadsad asdsa asd";
+    MockSocket m;
+
+    m.buffer = httpReq;
+
+    ASSERT_THROW(HTTPRequestParser::getHTTPRequest(m), InvalidRequestMethod);
 }
