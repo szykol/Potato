@@ -1,32 +1,21 @@
 #include "Socket.h"
 
 #include <iostream>
+#include <sys/socket.h>
+#include <netdb.h>
 
-Socket::Socket(Socket::Port port)
+Socket::Socket(const std::string& port)
 {
-    m_Socketfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (m_Socketfd < 0) {
-        std::cout << "Could not create socket\n";
-        return;
-    }
-
-    std::memset((char *)&m_Addr, 0, sizeof(m_Addr));
-    m_Addr.sin_family = AF_INET;
-    m_Addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    m_Addr.sin_port = htons(port.port);
-
-    if (bind(m_Socketfd, (sockaddr *)&m_Addr, sizeof(m_Addr)) < 0) {
-        std::cout << "Bind failed\n";
-        return;
-    }
+    initSocket(port);
 }
 
 int Socket::listen(int maxConnections) { return ::listen(*this, maxConnections); }
 
 Socket Socket::accept()
 {
-    socklen_t socklen = sizeof(m_Addr);
-    return ::accept(*this, (sockaddr *)&m_Addr, &socklen);
+    sockaddr_storage incoming;
+    socklen_t socklen = sizeof(incoming);
+    return ::accept(*this, (sockaddr *)&incoming, &socklen);
 }
 
 std::string Socket::read(uint bytes)
@@ -41,6 +30,46 @@ std::string Socket::read(uint bytes)
     return bufferString;
 }
 
-void Socket::write(const std::string &content) { ::write(*this, content.c_str(), content.length()); }
+void Socket::write(const std::string &content) {
+    auto sendBytes = 0;
+    auto toWrite = content.length();
+
+    while(sendBytes < toWrite) {
+        sendBytes += ::write(*this, content.c_str(), toWrite);
+        toWrite -= sendBytes;
+    }
+}
 
 void Socket::close() { ::close(*this); }
+
+void Socket::initSocket(const std::string& port) 
+{
+    addrinfo hints;
+    addrinfo *res;
+    
+    std::memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+
+    getaddrinfo(NULL, port.c_str(), &hints, &res);
+
+    int yes = 1;
+    for (auto node = res; node != nullptr; node = node->ai_next) {
+        if ((m_Socketfd = socket(node->ai_family, node->ai_socktype, node->ai_protocol)) == -1) {
+            continue;
+        }
+
+        if (setsockopt(m_Socketfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0) {
+            continue;
+        }
+
+        if (::bind(m_Socketfd, node->ai_addr, node->ai_addrlen) < 0) {
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    freeaddrinfo(res); 
+}

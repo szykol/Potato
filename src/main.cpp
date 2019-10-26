@@ -5,7 +5,7 @@
 
 int main()
 {
-    auto server = Server(Socket::Port(8080), 3);
+    auto server = Server("8080", 3);
 
     server.AddEndpoint("/", {RequestMethod::GET, RequestMethod::POST},
                        [](auto &req) { req.Write("<h1>Hello, World!</h1><h2>Welcome to Potato</h2>"); });

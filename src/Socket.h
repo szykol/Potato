@@ -8,21 +8,12 @@
 
 #include <string>
 
+struct addrinfo;
+
 class Socket {
     int m_Socketfd = -1;
-    sockaddr_in m_Addr;
-
   public:
-    struct Port {
-        int port;
-        Port(int port)
-            : port(port)
-        {
-        }
-    };
-
-  public:
-    Socket(Port port);
+    Socket(const std::string& port);
     Socket(int filefd)
         : m_Socketfd(filefd)
     {
@@ -33,4 +24,6 @@ class Socket {
     virtual void write(const std::string &content);
     virtual void close();
     inline operator int() { return m_Socketfd; }
+  private:
+    void initSocket(const std::string& port);
 };
