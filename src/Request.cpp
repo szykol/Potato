@@ -91,7 +91,11 @@ HTTPRequest::HTTPRequest(Socket socket, const std::string &method, const std::st
 
 bool HTTPRequest::AddHeaderField(const std::pair<std::string, std::string> &headerField)
 {
-    m_HeaderFields.insert(headerField);
+    if (m_HeaderFields.find(headerField.first) == m_HeaderFields.end()) {
+        m_HeaderFields.insert(headerField);
+        return true;
+    }
+    return false;
 }
 
 void HTTPRequest::Write(const std::string &content) const
