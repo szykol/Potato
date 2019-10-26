@@ -12,8 +12,9 @@ struct addrinfo;
 
 class Socket {
     int m_Socketfd = -1;
+
   public:
-    Socket(const std::string& port);
+    Socket(const std::string &port);
     Socket(int filefd)
         : m_Socketfd(filefd)
     {
@@ -24,6 +25,7 @@ class Socket {
     virtual void write(const std::string &content);
     virtual void close();
     inline operator int() { return m_Socketfd; }
+
   private:
-    void initSocket(const std::string& port);
+    void initSocket(const std::string &port);
 };

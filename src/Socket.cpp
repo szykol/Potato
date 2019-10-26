@@ -1,13 +1,10 @@
 #include "Socket.h"
 
 #include <iostream>
-#include <sys/socket.h>
 #include <netdb.h>
+#include <sys/socket.h>
 
-Socket::Socket(const std::string& port)
-{
-    initSocket(port);
-}
+Socket::Socket(const std::string &port) { initSocket(port); }
 
 int Socket::listen(int maxConnections) { return ::listen(*this, maxConnections); }
 
@@ -30,11 +27,12 @@ std::string Socket::read(uint bytes)
     return bufferString;
 }
 
-void Socket::write(const std::string &content) {
+void Socket::write(const std::string &content)
+{
     auto sendBytes = 0;
     auto toWrite = content.length();
 
-    while(sendBytes < toWrite) {
+    while (sendBytes < toWrite) {
         sendBytes += ::write(*this, content.c_str(), toWrite);
         toWrite -= sendBytes;
     }
@@ -42,11 +40,11 @@ void Socket::write(const std::string &content) {
 
 void Socket::close() { ::close(*this); }
 
-void Socket::initSocket(const std::string& port) 
+void Socket::initSocket(const std::string &port)
 {
     addrinfo hints;
     addrinfo *res;
-    
+
     std::memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
@@ -66,10 +64,11 @@ void Socket::initSocket(const std::string& port)
 
         if (::bind(m_Socketfd, node->ai_addr, node->ai_addrlen) < 0) {
             continue;
-        } else {
+        }
+        else {
             break;
         }
     }
 
-    freeaddrinfo(res); 
+    freeaddrinfo(res);
 }

@@ -1,7 +1,7 @@
 #include "Server.h"
 #include "Request.h"
 
-Server::Server(const std::string& port, int maxConnections)
+Server::Server(const std::string &port, int maxConnections)
     : m_Port(port)
     , m_Socket(port)
     , m_MaxConnections(maxConnections)
