@@ -36,6 +36,7 @@ void Server::run()
             auto endpoint = m_EndpointMap.find(request.URI())->second;
             if (!endpoint.AllowsMethod(method)) {
                 std::cout << "Method not allowed!" << std::endl;
+                request.Write("Method Not Allowed", 405);
                 continue;
             }
             auto callback = endpoint.m_Callback;
@@ -43,7 +44,7 @@ void Server::run()
             callback(request);
         }
         else {
-            request.Write("Not found");
+            request.Write("Not found", 404);
         }
 
         std::cout << "Method: " << request.Method() << std::endl;

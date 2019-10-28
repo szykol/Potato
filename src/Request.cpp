@@ -98,11 +98,12 @@ bool HTTPRequest::AddHeaderField(const std::pair<std::string, std::string> &head
     return false;
 }
 
-void HTTPRequest::Write(const std::string &content) const
+void HTTPRequest::Write(const std::string &content, int statusCode) const
 {
     const auto length = content.length();
     if (length > 0) {
-        std::string response = "HTTP/1.1 200 OK\r\nServer: Potato\r\nContent-Type: text/html\r\nContent-Length: ";
+        std::string response = "HTTP/1.1 " + std::to_string(statusCode) +
+                               " OK\r\nServer: Potato\r\nContent-Type: text/html\r\nContent-Length: ";
         response += std::to_string(length);
         response += "\r\n\r\n" + content;
 

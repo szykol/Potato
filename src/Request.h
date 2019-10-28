@@ -30,7 +30,7 @@ class HTTPRequest {
     inline const std::unordered_map<std::string, std::string> &HeaderFields() const { return m_HeaderFields; }
     inline const std::string &Body() const { return m_Body; }
 
-    void Write(const std::string &content) const;
+    void Write(const std::string &content, int statusCode = 200) const;
 };
 
 class HTTPRequestParser {
