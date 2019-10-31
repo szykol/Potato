@@ -16,6 +16,8 @@ jobs:
     - name: test
       run: build/test/Test
     - name: getpytest
-      run: pip install pytest
+      run: python -m pip install pytest requests
+    - name: runpotato
+      run: build/potato &
     - name: endtoend
-      run: py.test test/EndToEnd/EndToEndTest.py
+      run: python -m pytest test/EndToEnd/EndToEndTest.py
