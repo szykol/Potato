@@ -1,16 +1,16 @@
 import subprocess
 import requests
-import time
 import unittest
-import multiprocessing
 import json
 
 class EndToEndTest(unittest.TestCase):
     def setUp(self):
-        self.sb = subprocess.Popen('build/potato')
+        # self.sb = subprocess.Popen('build/potato')
+        pass
 
     def tearDown(self):
-        self.sb.kill()
+        pass
+        # self.sb.kill()
 
     def test_potato_works(self):
         """ Test if potato responds correctly """
