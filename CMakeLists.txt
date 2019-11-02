@@ -12,6 +12,10 @@ file(GLOB SRC
 )
 
 add_library(Potato STATIC ${SRC})
+
+add_subdirectory(spdlog)
+target_link_libraries(Potato spdlog::spdlog)
+
 add_subdirectory(test)
 
 add_executable(potato "src/main.cpp")
