@@ -16,7 +16,6 @@ class EndToEndTest(unittest.TestCase):
         r = requests.get('http://localhost:8080')
         self.assertEqual(r.status_code, 200)
     
-    @pytest.mark.skip()
     def test_method_not_allowed(self):
         r = requests.get('http://localhost:8080/say_hi')
         self.assertEqual(r.status_code, 200)

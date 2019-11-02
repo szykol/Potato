@@ -17,8 +17,10 @@ Socket Socket::accept()
 
 std::string Socket::read(uint bytes)
 {
-    auto buffer = new char[bytes];
-    std::memset(buffer, 0, bytes);
+    if (bytes == 0)
+        return "";
+    auto buffer = new char[bytes + 1];
+    std::memset(buffer, 0, bytes + 1);
 
     auto sizeRead = ::read(*this, buffer, bytes);
     std::string bufferString = buffer;

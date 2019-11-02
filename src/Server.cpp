@@ -37,6 +37,7 @@ void Server::run()
             if (!endpoint.AllowsMethod(method)) {
                 std::cout << "Method not allowed!" << std::endl;
                 request.Write("Method Not Allowed", 405);
+                in_sock.close();
                 continue;
             }
             auto callback = endpoint.m_Callback;

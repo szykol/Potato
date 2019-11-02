@@ -51,22 +51,21 @@ std::vector<std::string> HTTPRequestParser::getLines(Socket &socket)
 
     std::string bodyRemainder;
     while (true) {
-        while (req.find("\n") == std::string::npos) {
+        while (req.find("\r\n") == std::string::npos) {
             req += socket.read(10);
         }
-        auto newLinePos = req.find("\n");
+        auto newLinePos = req.find("\r\n");
         auto line = req.substr(0, newLinePos);
-        if (line.length() == 1) {
-            bodyRemainder = req.substr(newLinePos + 1);
-            lines.push_back(bodyRemainder);
+        auto remainder = req.substr(newLinePos + 2);
+        if (line.length() == 0) {
+            bodyRemainder = req.substr(newLinePos + 2);
+            if (bodyRemainder.length() > 0)
+                lines.push_back(bodyRemainder);
             break;
         }
-        line.erase(line.find("\r"));
         lines.push_back(line);
 
-        auto remainder = req.substr(newLinePos + 1);
-        req.clear();
-        req += remainder;
+        req = remainder;
     }
 
     return lines;
