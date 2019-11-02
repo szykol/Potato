@@ -1,4 +1,4 @@
-if [ ! "$(ls -A googletest)" ]; then
+if [ ! "$(ls -A googletest)" ] || [ ! "$(ls -A spdlog)" ]; then
     echo "googletest submodule does not exist"
     echo "initializing submodules"
     git submodule update --init --recursive
