@@ -59,8 +59,7 @@ std::vector<std::string> HTTPRequestParser::getLines(Socket &socket)
         auto remainder = req.substr(newLinePos + 2);
         if (line.length() == 0) {
             bodyRemainder = req.substr(newLinePos + 2);
-            if (bodyRemainder.length() > 0)
-                lines.push_back(bodyRemainder);
+            lines.push_back(bodyRemainder);
             break;
         }
         lines.push_back(line);
