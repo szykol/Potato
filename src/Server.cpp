@@ -1,11 +1,13 @@
 #include "Server.h"
 #include "Request.h"
+#include "Log.h"
 
 Server::Server(const std::string &port, int maxConnections)
     : m_Port(port)
     , m_Socket(port)
     , m_MaxConnections(maxConnections)
 {
+    LOG_DEBUG("STARTING POTATO SERVER");
 }
 
 void Server::AddEndpoint(const std::string &URI, const std::vector<RequestMethod> &methods,
@@ -15,19 +17,19 @@ void Server::AddEndpoint(const std::string &URI, const std::vector<RequestMethod
 }
 void Server::run()
 {
-    std::cout << "Server starts listening at the port" << m_Port << std::endl;
-    if (m_Socket.listen(3) < 0) {
-        std::cout << "Error while listening \n";
+    std::cout << "Server starts listening at the port " << m_Port << std::endl;
+    LOG_DEBUG("Server starts listening at port {} and maxconnections={}", m_Port, m_MaxConnections);
+    if (m_Socket.listen(m_MaxConnections) < 0) {
+        LOG_ERROR("Error while listening socket | Error: {}", strerror(errno));
         return;
     }
     while (true) {
         auto in_sock = m_Socket.accept();
         if (in_sock < 0) {
-            std::cout << "Error in accepting\n";
-            std::cout << in_sock << std::endl;
-            std::cout << strerror(errno) << std::endl;
+            LOG_ERROR("Error while accepting socket fd={} | Error: {}", int(in_sock), strerror(errno));
             return;
         }
+        LOG_DEBUG("Accepted new connection socket fd={}", int(in_sock));
 
         auto request = HTTPRequestParser::getHTTPRequest(in_sock);
 
@@ -35,8 +37,9 @@ void Server::run()
             auto method = request.Method();
             auto endpoint = m_EndpointMap.find(request.URI())->second;
             if (!endpoint.AllowsMethod(method)) {
-                std::cout << "Method not allowed!" << std::endl;
+                LOG_DEBUG("Method Not Allowed");
                 request.Write("Method Not Allowed", 405);
+                spdlog::get("CORE")->flush();
                 in_sock.close();
                 continue;
             }
@@ -45,20 +48,18 @@ void Server::run()
             callback(request);
         }
         else {
+            LOG_DEBUG("404 Not Found");
             request.Write("Not found", 404);
         }
 
-        std::cout << "Method: " << request.Method() << std::endl;
-        std::cout << "URI: " << request.URI() << std::endl;
-        std::cout << "HTTPVersion: " << request.HTTPVersion() << std::endl;
-        std::cout << "HeaderFields: " << std::endl;
-
+        LOG_DEBUG("Method: {} | URI: {} | HTTPVersion: {}", request.Method(), request.URI(), request.HTTPVersion());
+        LOG_DEBUG("Header Fields");
         for (auto &pair : request.HeaderFields()) {
-            std::cout << pair.first << ": " << pair.second << std::endl;
+            LOG_DEBUG("{}: {}", pair.first, pair.second);
         }
-
-        if (request.Body().length() > 0)
-            std::cout << "Content body: " << request.Body() << std::endl;
+        LOG_DEBUG("Content Body: {}", request.Body());
+        LOG_DEBUG("CLOSING SOCKET");
+        spdlog::get("CORE")->flush();
         in_sock.close();
     }
 }
