@@ -10,6 +10,10 @@ file(GLOB SRC
     "src/*.h"
     "src/*.cpp"
 )
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+    message("debug mode")
+    add_definitions(-DPOTATO_DEBUG)
+ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_library(Potato STATIC ${SRC})
 
