@@ -5,6 +5,7 @@
 #include "Endpoint.h"
 #include "Exception.h"
 #include "Utill.h"
+#include "Log.h"
 
 std::string HTTPRequestParser::parseHTTPRequest() { return ""; }
 
@@ -105,6 +106,7 @@ void HTTPRequest::Write(const std::string &content, int statusCode) const
         response += std::to_string(length);
         response += "\r\n\r\n" + content;
 
+        LOG_DEBUG("Writing response: {}", response);
         m_Socket.write(response);
     }
 }
