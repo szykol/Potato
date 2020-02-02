@@ -22,5 +22,6 @@ file(GLOB SRC
 add_executable(potato "src/main.cpp")
 add_library(PotatoLib STATIC ${SRC})
 target_link_libraries(PotatoLib spdlog::spdlog)
+target_include_directories(PotatoLib PUBLIC asio/asio/include)
 
 target_link_libraries(potato PotatoLib)

@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include <string>
+#include <asio.hpp>
 
 struct addrinfo;
 
