@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(Potato)
-
+set (CMAKE_CXX_STANDARD 17)
 enable_testing()
 
 add_subdirectory(googletest)
@@ -16,11 +16,11 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_library(Potato STATIC ${SRC})
+add_executable(potato "src/main.cpp")
 
 add_subdirectory(spdlog)
 target_link_libraries(Potato spdlog::spdlog)
 
 add_subdirectory(test)
 
-add_executable(potato "src/main.cpp")
 target_link_libraries(potato Potato)
