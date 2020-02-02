@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libPotato.a  CMakeFiles/Potato.dir/src/Endpoint.cpp.o CMakeFiles/Potato.dir/src/Log.cpp.o CMakeFiles/Potato.dir/src/Request.cpp.o CMakeFiles/Potato.dir/src/Server.cpp.o CMakeFiles/Potato.dir/src/Socket.cpp.o CMakeFiles/Potato.dir/src/Utill.cpp.o CMakeFiles/Potato.dir/src/main.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libPotato.a

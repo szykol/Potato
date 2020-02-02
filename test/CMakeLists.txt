@@ -7,6 +7,6 @@ file(GLOB TEST_SRC
 
 add_executable(Test ${TEST_SRC})
 
-target_link_libraries(Test PUBLIC gtest_main Potato)
+target_link_libraries(Test PUBLIC gtest_main PotatoLib)
 
 add_test(Name Test COMMAND Test)
