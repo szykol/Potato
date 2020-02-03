@@ -14,7 +14,7 @@ if hash cmake 2>/dev/null; then
         echo "Running cmake without debug flag"
         cmake ..
     fi
-    make
+    make -j 4
 else
     echo "cmake is not installed. Please try again with cmake installed"
 fi
