@@ -1,4 +1,4 @@
-FROM gcc:4.9
+FROM rikorose/gcc-cmake:gcc-7
  
 # Copy the current folder which contains C++ source code to the Docker image under /usr/src
 COPY . /usr/potato/
