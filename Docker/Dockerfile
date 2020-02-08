@@ -5,3 +5,6 @@ COPY . /usr/potato/
  
 # Specify the working directory
 WORKDIR /usr/potato
+
+RUN apt-get update
+RUN apt-get install -y vim nano tmux
