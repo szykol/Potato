@@ -1,0 +1,13 @@
+version: '3.2'
+services:
+  potato:
+    build: Docker
+    container_name: potato
+    hostname: potato
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./:/usr/potato/
+    tty: true
+    stdin_open: true
+    entrypoint: /bin/bash
