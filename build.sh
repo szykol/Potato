@@ -1,8 +1,13 @@
-if [ ! "$(ls -A googletest)" ] || [ ! "$(ls -A spdlog)" ]; then
-    echo "one or more modules does not exist"
-    echo "initializing submodules"
-    git submodule update --init --recursive
-fi
+submodules=(`grep "path =" .gitmodules | awk '{ print $3 }'`)
+
+for submdl in ${submodules[@]}; do
+    if [ ! "$(ls -A $submdl)" ]; then
+        echo "one or more modules does not exist"
+        echo "initializing submodules"
+        git submodule update --init --recursive
+        break
+    fi
+done
 
 if hash cmake 2>/dev/null; then
     mkdir -p build
@@ -14,7 +19,7 @@ if hash cmake 2>/dev/null; then
         echo "Running cmake without debug flag"
         cmake ..
     fi
-    make
+    make -j4
 else
-    echo "cmake is not installed. Please try again with cmake installed"
+    echo "CMake is not installed. Please try again with CMake installed"
 fi
