@@ -7,4 +7,5 @@ COPY . /usr/potato/
 WORKDIR /usr/potato
 
 RUN apt-get update
-RUN apt-get install -y vim nano tmux
+RUN apt-get install -y vim nano tmux python-pip
+RUN pip install --no-cache-dir -r requirements.txt
